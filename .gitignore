@@ -1,0 +1,7 @@
+# Node dependencies
+app/node_modules
+
+# Expo
+app/.expo
+app/.expo/*
+app/dist
