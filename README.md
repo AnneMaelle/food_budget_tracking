@@ -1,24 +1,31 @@
-# Food Budget Tracking App
+# MealMood (React + Vite PWA)
 
-This repository contains a minimal React Native (Expo) application to log daily meals and track a 14‑day food budget.
+Cute 14‑day meal budget tracker with banking and conversion rules:
 
-## Running
+- Per‑cycle goals: Vegan 10, Vegetarian 9, Small‑meat points 9
+- Big meat costs **2** small‑meat points
+- Bank leftovers at the end of a 14‑day cycle
+- Conversion: **2 vegetarian → 1 vegan + 1 small‑meat point**
+- Offline‑capable (basic service worker), installable as a PWA
 
-Install dependencies with `npm install` inside the `app` directory and then start Expo:
-
+## Quick start
 ```bash
-cd app
-npm install
-npm start
+npm create vite@latest mealmood -- --template react-ts
+cd mealmood
+# Replace the generated files with the contents of this zip (or copy src/, public/, etc.)
+npm i
+npm run dev
 ```
 
-You can run on web with `npm run web` or on a device using the Expo Go app.
+Or unzip and run directly:
+```bash
+npm i
+npm run dev
+```
 
-## Features
-
-* Log four meal categories: **vegan**, **vegetarian**, **small meat** and **big meat**.
-* Meal data is stored locally using `AsyncStorage`.
-* Budgets are tracked over the last 14 days.
-  * Two vegetarian meals count as **one meat** plus **one vegan** meal.
-  * A big meat meal costs **two meat** meals.
-* The home screen displays remaining meat and vegan meals in the current budget window.
+## Notes
+- The 14‑day cycle is computed from an **anchor date** (default: 2025‑01‑01 Europe/Paris). Change it via the ⚙️ Cycle button.
+- Progress bars include your **bank** so you can see how much runway you have this cycle.
+- “Add leftovers to bank” simulates closing a cycle today; you can do this on your exact end date.
+- Data persists locally in your browser (localStorage).
+```

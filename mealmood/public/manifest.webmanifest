@@ -1,0 +1,21 @@
+{
+  "name": "MealMood",
+  "short_name": "MealMood",
+  "description": "Cute meal budget tracker (vegan, vegetarian, small & big meat) with banking and conversions.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7efe7",
+  "theme_color": "#f7efe7",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
