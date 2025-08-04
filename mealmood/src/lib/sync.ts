@@ -2,7 +2,11 @@ import { supabase } from './supabase'
 import { Data, DEFAULT_DATA, Meal } from './logic'
 
 export async function fetchMeals() {
-  const { data, error } = await supabase.from('meals').select('*').order('at', { ascending: false })
+  const { data, error } = await supabase
+    .from('meals')
+    .select('*')
+    .eq('user_id', 'anonymous')
+    .order('at', { ascending: false })
   if (error) {
     console.error("❌ fetchMeals error:", error)
     throw new Error("Failed to fetch meals from Supabase")
@@ -11,7 +15,8 @@ export async function fetchMeals() {
 }
 
 export async function addMeal(meal: Meal) {
-  const { error } = await supabase.from('meals').insert([meal])
+  const fullMeal = { ...meal, user_id: 'anonymous' } // ✅ ensure user_id is set
+  const { error } = await supabase.from('meals').insert([fullMeal])
   if (error) throw error
 }
 
