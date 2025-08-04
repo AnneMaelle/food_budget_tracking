@@ -3,10 +3,11 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import './styles.css'
 
-// Register service worker (basic, optional)
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js').catch(() => {})
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    for (const reg of regs) {
+      reg.unregister()
+    }
   })
 }
 
