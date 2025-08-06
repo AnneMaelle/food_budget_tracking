@@ -130,20 +130,21 @@ export default function MealPlannerCalendar({ meals, remaining, onMealsUpdated }
       </div>
 
       {/* Calendar */}
-      <div style={{ display: 'flex', gap: '8px', overflowX: 'auto' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent:'flex-start', overflowX: 'auto' }}>
         {days.map((day, dayIndex) => (
           <div
             id={`day-${dayIndex}`}
             key={day.toISOString()}
             style={{
-              border: '1px solid #ccc',
-              borderRadius: '8px',
-              padding: '8px',
-              minWidth: '120px',
-              flexShrink: 0,
-              background: '#fafafa'
+                border: '1px solid #ccc',
+                borderRadius: '8px',
+                padding: '8px',
+                minWidth: '120px',
+                maxWidth: '120px',
+                flex: '0 0 auto',
+                background: '#fafafa'
             }}
-          >
+            >
             <strong>{day.format('MMM D')}</strong>
             {mealsByDay[dayIndex]?.map(meal => (
               <div
