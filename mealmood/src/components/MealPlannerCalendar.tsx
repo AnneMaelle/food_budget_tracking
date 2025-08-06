@@ -152,7 +152,7 @@ export default function MealPlannerCalendar({ meals, remaining, onMealsUpdated }
                 background: '#fafafa'
             }}
             >
-            <strong>{day.format('MMM D')}</strong>
+            <strong>{day.format('ddd D MMM')}</strong>
             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                 {mealsByDay[dayIndex]?.map(meal => (
                     <div key={meal.id} style={{ fontSize: '1.8rem', lineHeight: 1 }}>
