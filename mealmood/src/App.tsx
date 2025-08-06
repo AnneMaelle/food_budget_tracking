@@ -1,10 +1,10 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
-import MealButtons from './components/MealButtons'
+import MealPlannerCalendar from './components/MealPlannerCalendar'
 import Progress from './components/Progress'
 import { computeCycle, formatRange } from './lib/date'
-import { DEFAULT_DATA, Data, Meal, MealType, progressFor, leftovers, addToBank, convertVegetarian } from './lib/logic'
-import { addMeal, fetchMeals, fetchMeta, saveMeta, resetAllData, archiveCurrentCycle } from './lib/sync'
+import { DEFAULT_DATA, Data, Meal, progressFor, leftovers, addToBank, convertVegetarian } from './lib/logic'
+import { fetchMeals, fetchMeta, saveMeta, resetAllData, archiveCurrentCycle } from './lib/sync'
 
 export default function App() {
   const [data, setData] = useState<Omit<Data, 'meals'>>(DEFAULT_DATA)
@@ -38,13 +38,6 @@ export default function App() {
   const cycleMeals = useMemo(() => meals.filter(m => m.at >= cycle.startISO && m.at < cycle.endISO), [meals, cycle])
   const prog = useMemo(() => progressFor(cycleMeals, cycle.startISO, cycle.endISO), [cycleMeals, cycle])
   const left = useMemo(() => leftovers(data.goals, prog), [data.goals, prog])
-
-  const onLog = async (type: MealType) => {
-    const meal: Meal = { id: crypto.randomUUID(), type, at: new Date().toISOString() }
-    await addMeal(meal)
-    const updatedMeals = await fetchMeals()
-    setMeals(updatedMeals)
-  }
 
   const endCycleAndBank = async () => {
     const nextBank = addToBank(data.bank, left)
@@ -98,15 +91,26 @@ export default function App() {
         </div>
       </div>
 
-      <div className="card">
-        <h2>What did you eat?</h2>
-        <MealButtons onLog={onLog} />
-      </div>
-
+      <MealPlannerCalendar
+        meals={cycleMeals}
+        remaining={{
+          vegan: data.goals.vegan + data.bank.vegan - prog.vegan,
+          vegetarian: data.goals.vegetarian + data.bank.vegetarian - prog.vegetarian,
+          small: data.goals.small + data.bank.small - prog.smallPointsUsed,
+          big: 0 // if you want to track big separately
+        }}
+        onMealsUpdated={async () => {
+          const refreshed = await fetchMeals()
+          setMeals(refreshed)
+        }}
+      />
+     
+      {/* Progress bars */}
       <Progress label="Vegan" value={prog.vegan} total={data.goals.vegan + data.bank.vegan} hint={`Goal ${data.goals.vegan} • Bank ${data.bank.vegan}`} />
       <Progress label="Vegetarian" value={prog.vegetarian} total={data.goals.vegetarian + data.bank.vegetarian} hint={`Goal ${data.goals.vegetarian} • Bank ${data.bank.vegetarian}`} />
       <Progress label="Small Meat (points)" value={prog.smallPointsUsed} total={data.goals.small + data.bank.small} hint={`Goal ${data.goals.small} • Bank ${data.bank.small} • Big meat used: ${prog.bigCount}× (cost 2)`} />
-
+      
+      {/* End of cycle tools */}
       <div className="card">
         <div className="row" style={{flexWrap:'wrap'}}>
           <h2>End of cycle</h2>

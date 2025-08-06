@@ -9,10 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@atlaskit/pragmatic-drag-and-drop": "^1.7.4",
     "@supabase/supabase-js": "^2.53.0",
-    "dayjs": "^1.11.11",
+    "dayjs": "^1.11.13",
     "dexie": "^4.0.11",
     "react": "^18.2.0",
+    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {

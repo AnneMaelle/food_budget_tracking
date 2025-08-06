@@ -6,7 +6,7 @@ export interface Goals {
   small: number
 }
 export interface Bank { vegan: number; vegetarian: number; small: number }
-export interface Meal { id: string; type: MealType; at: string; notes?: string }
+export interface Meal { id: string; type: MealType; at: string; notes?: string, user_id: string }
 export interface Data {
   goals: Goals
   bank: Bank

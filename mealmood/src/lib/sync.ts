@@ -51,11 +51,18 @@ export async function fetchMeals() {
   return data as Meal[]
 }
 
-export async function addMeal(meal: Meal) {
-  const fullMeal = { ...meal, user_id: 'anonymous' } // ✅ ensure user_id is set
-  const { error } = await supabase.from('meals').insert([fullMeal])
-  if (error) throw error
+export async function addMeal(type: Meal['type'], dateISO?: string) {
+  const meal: Meal = {
+    id: crypto.randomUUID(),
+    type,
+    at: dateISO ?? new Date().toISOString(), // default to now if no date passed
+    notes: '',
+    user_id: 'anonymous'
+  };
+  const { error } = await supabase.from('meals').insert([meal]);
+  if (error) throw error;
 }
+
 
 export async function deleteMeal(id: string) {
   const { error } = await supabase.from('meals').delete().eq('id', id)
@@ -104,3 +111,13 @@ export async function fetchArchivedCycles() {
   if (error) throw error
   return data
 }
+
+export async function updateMealDate(mealId: string, newISODate: string) {
+  const { error } = await supabase
+    .from('meals')
+    .update({ at: newISODate })
+    .eq('id', mealId)
+
+  if (error) throw error
+}
+
