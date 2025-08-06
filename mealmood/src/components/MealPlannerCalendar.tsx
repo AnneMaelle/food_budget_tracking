@@ -15,6 +15,13 @@ interface Props {
   onMealsUpdated: () => void
 }
 
+const MEAL_EMOJI: Record<Meal['type'], string> = {
+  vegan: '🥦',
+  vegetarian: '🧀',
+  small: '🍗',
+  big: '🐂'
+}
+
 export default function MealPlannerCalendar({ meals, remaining, onMealsUpdated }: Readonly<Props>) {
   const cycle = computeCycle()
   const days = Array.from({ length: 14 }).map((_, i) =>
@@ -146,19 +153,13 @@ export default function MealPlannerCalendar({ meals, remaining, onMealsUpdated }
             }}
             >
             <strong>{day.format('MMM D')}</strong>
-            {mealsByDay[dayIndex]?.map(meal => (
-              <div
-                key={meal.id}
-                style={{
-                  padding: '6px',
-                  margin: '4px 0',
-                  background: '#f0f0f0',
-                  borderRadius: '4px'
-                }}
-              >
-                {meal.type}
-              </div>
-            ))}
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                {mealsByDay[dayIndex]?.map(meal => (
+                    <div key={meal.id} style={{ fontSize: '1.8rem', lineHeight: 1 }}>
+                    {MEAL_EMOJI[meal.type]}
+                    </div>
+                ))}
+                </div>
           </div>
         ))}
       </div>
