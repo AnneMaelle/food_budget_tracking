@@ -1,5 +1,42 @@
 import { supabase } from './supabase'
 import { Data, DEFAULT_DATA, Meal } from './logic'
+import { computeCycle } from './date'
+
+export async function archiveCurrentCycle() {
+  // Figure out current cycle start
+  const cycle = computeCycle()
+
+  // Fetch current cycle meals
+  const { data: currentMeals, error: fetchError } = await supabase
+    .from('meals')
+    .select('*')
+    .gte('at', cycle.startISO)
+    .lt('at', cycle.endISO)
+
+  if (fetchError) throw fetchError
+  if (!currentMeals || currentMeals.length === 0) return
+
+  // Insert into archive table
+  const { error: insertError } = await supabase
+    .from('meals_archive')
+    .insert(
+      currentMeals.map(m => ({
+        ...m,
+        archive_cycle_start: cycle.startISO,
+      }))
+    )
+
+  if (insertError) throw insertError
+
+  // Delete from meals table
+  const { error: deleteError } = await supabase
+    .from('meals')
+    .delete()
+    .gte('at', cycle.startISO)
+    .lt('at', cycle.endISO)
+
+  if (deleteError) throw deleteError
+}
 
 export async function fetchMeals() {
   const { data, error } = await supabase
@@ -56,4 +93,14 @@ export async function resetAllData() {
     anchorISO: DEFAULT_DATA.anchorISO,
   })
   if (metaError) throw new Error(`Failed to reset meta: ${metaError.message}`)
+}
+
+export async function fetchArchivedCycles() {
+  const { data, error } = await supabase
+    .from('meals_archive')
+    .select('*')
+    .order('archive_cycle_start', { ascending: false })
+
+  if (error) throw error
+  return data
 }

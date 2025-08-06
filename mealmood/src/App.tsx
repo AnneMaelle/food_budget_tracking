@@ -4,7 +4,7 @@ import MealButtons from './components/MealButtons'
 import Progress from './components/Progress'
 import { computeCycle, formatRange } from './lib/date'
 import { DEFAULT_DATA, Data, Meal, MealType, progressFor, leftovers, addToBank, convertVegetarian } from './lib/logic'
-import { addMeal, fetchMeals, fetchMeta, saveMeta, resetAllData } from './lib/sync'
+import { addMeal, fetchMeals, fetchMeta, saveMeta, resetAllData, archiveCurrentCycle } from './lib/sync'
 
 export default function App() {
   const [data, setData] = useState<Omit<Data, 'meals'>>(DEFAULT_DATA)
@@ -49,9 +49,10 @@ export default function App() {
   const endCycleAndBank = async () => {
     const nextBank = addToBank(data.bank, left)
     await saveMeta({ bank: nextBank })
+    await archiveCurrentCycle()
     const updatedMeta = await fetchMeta()
     setData(updatedMeta)
-    alert('Leftovers added to bank!')
+    alert('Cycle archived and leftovers added to bank!')
   }
 
   const convert = async () => {
@@ -73,7 +74,6 @@ export default function App() {
       alert("Reset failed. See console for details.")
     }
   }
-
 
   const setAnchor = async () => {
     const v = prompt('Set cycle anchor date (YYYY-MM-DD)', data.anchorISO.slice(0, 10))
@@ -110,7 +110,7 @@ export default function App() {
       <div className="card">
         <div className="row" style={{flexWrap:'wrap'}}>
           <h2>End of cycle</h2>
-          <button className="pill" onClick={endCycleAndBank}>📥 Add leftovers to bank</button>
+          <button className="pill" onClick={endCycleAndBank}>📥 End the cycle and add leftovers to bank</button>
           <button className="pill" onClick={convert}>🔄 Convert 2 🧀 → 1 🥦 + 1 🍗</button>
         </div>
         <div className="muted" style={{marginTop:6}}>
